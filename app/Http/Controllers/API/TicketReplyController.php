@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Ticket;
 use App\Models\TicketReply;
+use Illuminate\Http\Request;
 
 class TicketReplyController extends Controller
 {
@@ -19,18 +20,20 @@ class TicketReplyController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, int $ticketId)
     {
+        $ticket = Ticket::findOrFail($ticketId);
+
         $request->validate([
             'pesan' => 'required|string',
-            'lampiran' => 'nullable|string'
+            'lampiran' => 'nullable|string',
         ]);
 
         $reply = TicketReply::create([
-            'ticket_id' => $ticketId,
+            'ticket_id' => $ticket->id,
             'user_id' => $request->user()->id, // User yang mengirim balasan
             'pesan' => $request->pesan,
-            'lampiran' => $request->lampiran
+            'lampiran' => $request->lampiran,
         ]);
 
         $reply->load('user');
@@ -38,7 +41,7 @@ class TicketReplyController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Balasan terkirim',
-            'data' => $reply
+            'data' => $reply,
         ], 201);
     }
 
