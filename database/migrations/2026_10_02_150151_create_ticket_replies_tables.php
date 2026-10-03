@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('ticket_replies_tables', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ticket_id')->constrained('ticket')->ondelete('cascade');
-            $table->foreignId('user_id')->constrained('users')-ondelete('cascade');
+            $table->foreignId('ticket_id')->constrained('tickets')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->text('pesan');
             $table->string('lampiran')->nullable();
             $table->timestamps();
